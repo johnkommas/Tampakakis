@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<catalog>
+  <areas>
+    <item key="kolla">
+      <name>Κόλλα</name>
+      <unit>m2</unit>
+      <consumption>6 kgr per 1 m2</consumption>
+      <latest_price>2.70</latest_price>
+    </item>
+    <item key="vysmata">
+      <name>Βύσματα</name>
+      <unit>m2</unit>
+      <consumption>5 units per 1 m2</consumption>
+      <latest_price>1.00</latest_price>
+    </item>
+    <item key="polysterini">
+      <name>Πολυστερίνη</name>
+      <unit>m2</unit>
+      <consumption>1 m2 per 1 m2</consumption>
+      <latest_price>8.00</latest_price>
+    </item>
+    <item key="yaloplegma">
+      <name>Υαλόπλεγμα</name>
+      <unit>m2</unit>
+      <consumption>1 m2 per 1 m2</consumption>
+      <latest_price>1.40</latest_price>
+    </item>
+    <item key="kolla_second">
+      <name>Κόλλα (Second Hand)</name>
+      <unit>m2</unit>
+      <consumption>6 kgr per 1 m2</consumption>
+      <latest_price>2.70</latest_price>
+    </item>
+    <item key="astari">
+      <name>Αστάρι</name>
+      <unit>m2</unit>
+      <consumption>1 m2 per 1 m2</consumption>
+      <latest_price>3.25</latest_price>
+    </item>
+    <item key="pasta">
+      <name>Πάστα</name>
+      <unit>m2</unit>
+      <consumption>1 m2 per 1 m2</consumption>
+      <latest_price>5.80</latest_price>
+    </item>
+    <item key="skaloseis">
+      <name>Τοποθήτηση Σκαλωσιών</name>
+      <unit>m2</unit>
+      <consumption>1 m2 per 1 m2</consumption>
+      <latest_price>7.00</latest_price>
+    </item>
+  </areas>
+
+  <linear>
+    <item key="nerostalachtes">
+      <name>Νεροσταλάχτης</name>
+      <unit>lm</unit>
+      <latest_price>1.40</latest_price>
+    </item>
+    <item key="goniokrano">
+      <name>Γωνιόκρανο</name>
+      <unit>lm</unit>
+      <latest_price>1.40</latest_price>
+    </item>
+  </linear>
+
+  <workers>
+    <item key="technitis">
+      <name>Τεχνίτης</name>
+      <unit>day</unit>
+      <latest_price>80.00</latest_price>
+    </item>
+    <item key="voithos">
+      <name>Βοηθός Τεχνίτη</name>
+      <unit>day</unit>
+      <latest_price>60.00</latest_price>
+    </item>
+  </workers>
+</catalog>
