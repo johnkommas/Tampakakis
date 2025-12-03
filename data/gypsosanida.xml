@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<catalog>
+  <areas>
+    <item key="orykto">
+      <name>Ορυκτοβάμβακας</name>
+      <unit>m2</unit>
+      <latest_price>8.00</latest_price>
+    </item>
+    <item key="stokarisma">
+      <name>Στοκάρισμα</name>
+      <unit>m2</unit>
+      <latest_price>2.00</latest_price>
+    </item>
+    <item key="vides">
+      <name>Βίδες</name>
+      <unit>m2</unit>
+      <latest_price>0.30</latest_price>
+    </item>
+  </areas>
+
+  <linear>
+    <item key="goniokrano">
+      <name>Γωνιόκρανο</name>
+      <unit>lm</unit>
+      <latest_price>0.70</latest_price>
+    </item>
+    <item key="perimetrika">
+      <name>Περιμετρικά</name>
+      <unit>unit</unit>
+      <consumption>1 units per 3 lm</consumption>
+      <latest_price>6.00</latest_price>
+    </item>
+    <item key="kanali">
+      <name>Κανάλι</name>
+      <unit>unit</unit>
+      <consumption>1 units per 3 lm</consumption>
+      <latest_price>8.00</latest_price>
+    </item>
+  </linear>
+
+  <pieces>
+    <item key="sheet_gyps">
+      <name>Φύλλο Γυψοσανίδας</name>
+      <unit>sheet</unit>
+      <consumption>3 units per 1 sheet</consumption>
+      <latest_price>12.00</latest_price>
+    </item>
+    <item key="sheet_ino">
+      <name>Ινοσανίδα</name>
+      <unit>sheet</unit>
+      <consumption>3 units per 1 sheet</consumption>
+      <latest_price>25.00</latest_price>
+    </item>
+    <item key="sheet_anthygri">
+      <name>Ανθυγρή Γυψοσανίδα</name>
+      <unit>sheet</unit>
+      <consumption>3 units per 1 sheet</consumption>
+      <latest_price>17.00</latest_price>
+    </item>
+    <item key="strotiras_500">
+      <name>Στρωτήρας 500cm</name>
+      <unit>unit</unit>
+      <latest_price>1.40</latest_price>
+    </item>
+    <item key="strotiras_750">
+      <name>Στρωτήρας 750cm</name>
+      <unit>unit</unit>
+      <latest_price>1.80</latest_price>
+    </item>
+    <item key="strotiras_1000">
+      <name>Στρωτήρας 1000cm</name>
+      <unit>unit</unit>
+      <latest_price>2.22</latest_price>
+    </item>
+    <item key="orthostatis_500">
+      <name>Ορθοστάτης 500cm</name>
+      <unit>unit</unit>
+      <latest_price>2.00</latest_price>
+    </item>
+    <item key="orthostatis_750">
+      <name>Ορθοστάτης 750cm</name>
+      <unit>unit</unit>
+      <latest_price>2.40</latest_price>
+    </item>
+    <item key="orthostatis_1000">
+      <name>Ορθοστάτης 1000cm</name>
+      <unit>unit</unit>
+      <latest_price>2.60</latest_price>
+    </item>
+  </pieces>
+
+  <workers>
+    <item key="technitis">
+      <name>Τεχνίτης</name>
+      <unit>day</unit>
+      <latest_price>80.00</latest_price>
+    </item>
+    <item key="voithos">
+      <name>Βοηθός Τεχνίτη</name>
+      <unit>day</unit>
+      <latest_price>60.00</latest_price>
+    </item>
+  </workers>
+</catalog>

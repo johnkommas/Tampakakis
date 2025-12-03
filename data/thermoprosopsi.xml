@@ -44,7 +44,7 @@
       <latest_price>5.80</latest_price>
     </item>
     <item key="skaloseis">
-      <name>Τοποθήτηση Σκαλωσιών</name>
+      <name>Τοποθέτηση Σκαλωσιών</name>
       <unit>m2</unit>
       <consumption>1 m2 per 1 m2</consumption>
       <latest_price>7.00</latest_price>

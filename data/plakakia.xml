@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<catalog>
+  <areas>
+    <item key="kolla">
+      <name>Κόλλα</name>
+      <unit>kg</unit>
+      <consumption>7 kg per 1 m2</consumption>
+      <latest_price>0.90</latest_price>
+    </item>
+    <item key="apostates">
+      <name>Αποστάτες</name>
+      <unit>unit</unit>
+      <consumption>8 units per 1 m2</consumption>
+      <latest_price>0.20</latest_price>
+    </item>
+    <item key="stokos">
+      <name>Στόκος</name>
+      <unit>unit</unit>
+      <consumption>4 units per 100 m2</consumption>
+      <latest_price>22.00</latest_price>
+    </item>
+  </areas>
+
+  <volumes>
+    <item key="tsimento">
+      <name>Τσιμέντο</name>
+      <unit>bag</unit>
+      <consumption>7 bags per 1 m3</consumption>
+      <latest_price>9.00</latest_price>
+    </item>
+    <item key="ammos">
+      <name>Άμμος</name>
+      <unit>m3</unit>
+      <latest_price>45.00</latest_price>
+    </item>
+  </volumes>
+
+  <workers>
+    <item key="technitis">
+      <name>Τεχνίτης</name>
+      <unit>day</unit>
+      <latest_price>80.00</latest_price>
+    </item>
+    <item key="voithos">
+      <name>Βοηθός Τεχνίτη</name>
+      <unit>day</unit>
+      <latest_price>60.00</latest_price>
+    </item>
+  </workers>
+</catalog>

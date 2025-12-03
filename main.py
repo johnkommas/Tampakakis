@@ -128,6 +128,94 @@ def update_price_in_xml(key: str, new_price: float):
     }
 
 
+# =======================
+# Plakakia catalog
+# =======================
+
+PLAKAKIA_DATA_FILE = Path("data/plakakia.xml")
+
+
+def ensure_plakakia_data_file():
+    if not PLAKAKIA_DATA_FILE.exists():
+        PLAKAKIA_DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+        PLAKAKIA_DATA_FILE.write_text(
+            """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog><areas/><volumes/><workers/></catalog>\n""",
+            encoding="utf-8",
+        )
+
+
+def load_plakakia_catalog():
+    ensure_plakakia_data_file()
+    tree = ET.parse(PLAKAKIA_DATA_FILE)
+    root = tree.getroot()
+
+    def parse_group(tag):
+        group_el = root.find(tag)
+        items = []
+        if group_el is not None:
+            for it in group_el.findall("item"):
+                key = it.get("key")
+                name = (it.findtext("name") or "").strip()
+                unit = (it.findtext("unit") or "").strip()
+                latest_price = float(it.findtext("latest_price") or 0)
+                consumption = it.findtext("consumption")
+                items.append(
+                    {
+                        "key": key,
+                        "name": name,
+                        "unit": unit,
+                        "latest_price": latest_price,
+                        **({"consumption": consumption} if consumption else {}),
+                    }
+                )
+        return items
+
+    return {
+        "areas": parse_group("areas"),
+        "volumes": parse_group("volumes"),
+        "workers": parse_group("workers"),
+    }
+
+
+def update_plakakia_price_in_xml(key: str, new_price: float):
+    ensure_plakakia_data_file()
+    tree = ET.parse(PLAKAKIA_DATA_FILE)
+    root = tree.getroot()
+
+    found_el = None
+    for group in ("areas", "volumes", "workers"):
+        grp = root.find(group)
+        if grp is None:
+            continue
+        for it in grp.findall("item"):
+            if it.get("key") == key:
+                found_el = it
+                break
+        if found_el is not None:
+            break
+
+    if found_el is None:
+        raise KeyError(f"Item with key '{key}' not found")
+
+    lp = found_el.find("latest_price")
+    if lp is None:
+        lp = ET.SubElement(found_el, "latest_price")
+    lp.text = f"{new_price:.2f}"
+
+    tree.write(PLAKAKIA_DATA_FILE, encoding="utf-8", xml_declaration=True)
+
+    name = (found_el.findtext("name") or "").strip()
+    unit = (found_el.findtext("unit") or "").strip()
+    consumption = found_el.findtext("consumption")
+    return {
+        "key": key,
+        "name": name,
+        "unit": unit,
+        "latest_price": float(lp.text or 0),
+        **({"consumption": consumption} if consumption else {}),
+    }
+
+
 class UpdatePricePayload(BaseModel):
     key: str = Field(..., description="Unique key of the catalog item")
     latest_price: float = Field(..., gt=0, description="New price to persist")
@@ -154,6 +242,151 @@ async def thermoprosopsi_catalog():
 async def thermoprosopsi_update_price(payload: UpdatePricePayload):
     try:
         updated = update_price_in_xml(payload.key, payload.latest_price)
+        return JSONResponse({"status": "ok", "item": updated})
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =======================
+# Gypsosanida catalog
+# =======================
+
+GYPSO_DATA_FILE = Path("data/gypsosanida.xml")
+
+
+def ensure_gypsosanida_data_file():
+    if not GYPSO_DATA_FILE.exists():
+        GYPSO_DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+        GYPSO_DATA_FILE.write_text(
+            """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog><areas/><linear/><pieces/><workers/></catalog>\n""",
+            encoding="utf-8",
+        )
+
+
+def load_gypsosanida_catalog():
+    ensure_gypsosanida_data_file()
+    tree = ET.parse(GYPSO_DATA_FILE)
+    root = tree.getroot()
+
+    def parse_group(tag):
+        group_el = root.find(tag)
+        items = []
+        if group_el is not None:
+            for it in group_el.findall("item"):
+                key = it.get("key")
+                name = (it.findtext("name") or "").strip()
+                unit = (it.findtext("unit") or "").strip()
+                latest_price = float(it.findtext("latest_price") or 0)
+                consumption = it.findtext("consumption")
+                items.append(
+                    {
+                        "key": key,
+                        "name": name,
+                        "unit": unit,
+                        "latest_price": latest_price,
+                        **({"consumption": consumption} if consumption else {}),
+                    }
+                )
+        return items
+
+    return {
+        "areas": parse_group("areas"),
+        "linear": parse_group("linear"),
+        "pieces": parse_group("pieces"),
+        "workers": parse_group("workers"),
+    }
+
+
+def update_gypsosanida_price_in_xml(key: str, new_price: float):
+    ensure_gypsosanida_data_file()
+    tree = ET.parse(GYPSO_DATA_FILE)
+    root = tree.getroot()
+
+    found_el = None
+    for group in ("areas", "linear", "pieces", "workers"):
+        grp = root.find(group)
+        if grp is None:
+            continue
+        for it in grp.findall("item"):
+            if it.get("key") == key:
+                found_el = it
+                break
+        if found_el is not None:
+            break
+
+    if found_el is None:
+        raise KeyError(f"Item with key '{key}' not found")
+
+    lp = found_el.find("latest_price")
+    if lp is None:
+        lp = ET.SubElement(found_el, "latest_price")
+    lp.text = f"{new_price:.2f}"
+
+    tree.write(GYPSO_DATA_FILE, encoding="utf-8", xml_declaration=True)
+
+    name = (found_el.findtext("name") or "").strip()
+    unit = (found_el.findtext("unit") or "").strip()
+    consumption = found_el.findtext("consumption")
+    return {
+        "key": key,
+        "name": name,
+        "unit": unit,
+        "latest_price": float(lp.text or 0),
+        **({"consumption": consumption} if consumption else {}),
+    }
+
+
+@app.get("/gypsosanida", response_class=HTMLResponse)
+async def gypsosanida_page(request: Request):
+    return templates.TemplateResponse(
+        "gypsosanida.html",
+        {"request": request},
+    )
+
+
+@app.get("/api/gypsosanida/catalog")
+async def gypsosanida_catalog():
+    try:
+        data = load_gypsosanida_catalog()
+        return JSONResponse(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/gypsosanida/update-price")
+async def gypsosanida_update_price(payload: UpdatePricePayload):
+    try:
+        updated = update_gypsosanida_price_in_xml(payload.key, payload.latest_price)
+        return JSONResponse({"status": "ok", "item": updated})
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/plakakia", response_class=HTMLResponse)
+async def plakakia_page(request: Request):
+    return templates.TemplateResponse(
+        "plakakia.html",
+        {"request": request},
+    )
+
+
+@app.get("/api/plakakia/catalog")
+async def plakakia_catalog():
+    try:
+        data = load_plakakia_catalog()
+        return JSONResponse(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/plakakia/update-price")
+async def plakakia_update_price(payload: UpdatePricePayload):
+    try:
+        updated = update_plakakia_price_in_xml(payload.key, payload.latest_price)
         return JSONResponse({"status": "ok", "item": updated})
     except KeyError as ke:
         raise HTTPException(status_code=404, detail=str(ke))

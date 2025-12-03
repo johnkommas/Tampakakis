@@ -10,10 +10,10 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0b1220;
+  --bg: #090909;
   --text: #e5e7eb;
   --muted: #94a3b8;
-  --card: #111827;
+  --card: #393942;
   --border: #1f2937;
   --brand: #38bdf8;
 }
@@ -27,6 +27,15 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+}
+
+/* Prevent iOS Safari auto-zoom on focus: ensure readable font size on form controls */
+html { -webkit-text-size-adjust: 100%; }
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
 }
 
 .container {
@@ -54,30 +63,76 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 64px;
+  min-height: 56px;
   gap: 12px;
 }
 
-.brand-logo { height: 28px; width: auto; display: block; }
+.site-header .brand .brand-logo {
+  height: 50px !important;
+}
+
+
+.brand-logo { height: 18px; width: auto; display: block; }
+/* Theme-specific header logos */
+.brand-logo--dark { display: none; }
+[data-theme="dark"] .brand-logo--light { display: none; }
+[data-theme="dark"] .brand-logo--dark { display: block; }
 
 .color-scheme-toggle {
-  display: inline-flex;
+  /* Segmented slider control */
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 4px;
+  padding: 2px;
+  background: rgba(2,6,23,0.03);
 }
-.color-scheme-toggle label { display: inline-flex; align-items: center; }
+.color-scheme-toggle label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2; /* above the moving indicator */
+  cursor: pointer;
+}
 .color-scheme-toggle input { display: none; }
 .color-scheme-toggle .text {
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  user-select: none;
 }
-.color-scheme-toggle input:checked + .text {
+/* When selected, rely on the sliding indicator for background; just change text color */
+.color-scheme-toggle input:checked + .text { color: #001018; }
+
+/* Sliding indicator pill */
+.color-scheme-toggle .slider-indicator {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc((100% - 4px) / 3);
+  height: calc(100% - 4px);
+  border-radius: 999px;
   background: var(--brand);
-  color: #001018;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  transform: translateX(0%);
+  transition: transform 220ms ease;
+  z-index: 1;
+}
+
+/* Move indicator based on the checked radio */
+.color-scheme-toggle:has(input[value="light"]:checked) .slider-indicator { transform: translateX(0%); }
+.color-scheme-toggle:has(input[value="dark"]:checked) .slider-indicator { transform: translateX(100%); }
+.color-scheme-toggle:has(input[value="auto"]:checked) .slider-indicator { transform: translateX(200%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .color-scheme-toggle .slider-indicator { transition: none; }
 }
 
 .visuallyhidden {
@@ -192,6 +247,9 @@ body {
 .site-footer {
   border-top: 1px solid var(--border);
   padding: 24px 0;
+  /* Make footer text more grey and apply lighter type */
+  color: var(--muted);
+  font-family: "Helvetica Neue", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .footer-left, .footer-center, .footer-right { display: flex; align-items: center; gap: 8px; }
@@ -200,6 +258,12 @@ body {
 .footer-logo--dark { display: none; }
 [data-theme="dark"] .footer-logo--light { display: none; }
 [data-theme="dark"] .footer-logo--dark { display: block; }
+
+/* Lighter, elegant copyright line */
+.site-footer .copyright {
+  font-weight: 200; /* "Extra Thin" where available; falls back gracefully */
+  letter-spacing: 0.02em;
+}
 
 
 
@@ -215,6 +279,43 @@ body {
 }
 
 /* ---- Thermoprosopsi page ---- */
+.thermoprosopsi-page {
+  /* Make non-bold text match footer style (greyer, thin Helvetica Neue) */
+  font-family: "Helvetica Neue", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  color: var(--muted);
+}
+
+/* Keep headings prominent with primary text color */
+.thermoprosopsi-page h1,
+.thermoprosopsi-page h2,
+.thermoprosopsi-page h3 {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Top stats: numbers should remain strong and primary colored */
+.thermoprosopsi-page .top-stats .value,
+.thermoprosopsi-page .top-stats .value .value-pct,
+.thermoprosopsi-page .value-pct {
+  color: var(--text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Item cards titles should use primary text color */
+.thermoprosopsi-page .item-card .info .title { color: var(--text); }
+
+/* Summary right column (numbers) use primary color */
+.thermoprosopsi-page .summary-row .right { color: var(--text); }
+
+/* Inputs should remain readable */
+.thermoprosopsi-page input[type="number"],
+.thermoprosopsi-page input[type="text"],
+.thermoprosopsi-page input[type="range"] {
+  font-weight: 400;
+  color: var(--text);
+}
 .section { margin: 20px 0 28px; border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--bg); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
 .section h2 { margin: 0 0 10px; font-size: 1.25rem; }
 .muted { color: var(--muted); }

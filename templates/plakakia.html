@@ -4,7 +4,7 @@
   <div class="thermoprosopsi-page">
   <section class="hero">
     <div class="hero-grid">
-      <h1>Θερμοπρόσοψη</h1>
+      <h1>Πλακάκια</h1>
       <div class="top-stats" aria-live="polite">
         <div class="stat">
           <div class="label">Σύνολο Κόστους</div>
@@ -27,7 +27,7 @@
 
   <section class="section" aria-labelledby="inputs-title">
     <h2 id="inputs-title">Εισαγωγή Ποσοτήτων</h2>
-    <p class="muted">Συμβουλή: Με κλικ στα πεδία επιλέγεται αυτόματα όλο το κείμενο. Εισαγάγετε εδώ m², lm και
+    <p class="muted">Συμβουλή: Με κλικ στα πεδία επιλέγεται αυτόματα όλο το κείμενο. Εισαγάγετε εδώ m², m³ και
       μεροκάματα για Τεχνίτη/Βοηθό.</p>
     <div class="form-grid">
       <div class="field">
@@ -35,8 +35,8 @@
         <input id="m2" name="m2" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.01" value="0">
       </div>
       <div class="field">
-        <label for="lm">Τρεχόμετρα (lm)</label>
-        <input id="lm" name="lm" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.01" value="0">
+        <label for="m3">Κυβικά Μέτρα (m³)</label>
+        <input id="m3" name="m3" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.01" value="0">
       </div>
       <div class="field">
         <label for="days-technitis">Τεχνίτης — Μεροκάματα</label>
@@ -66,14 +66,14 @@
 
   <section class="section" aria-labelledby="areas-title">
     <h2 id="areas-title">Υλικά ανά m²</h2>
-    <div class="muted">Το κόστος υπολογίζεται ως Τιμή × m².</div>
+    <div class="muted">Η ποσότητα προκύπτει από την κατανάλωση (π.χ. κιλά/τεμ. ανά m²). Τα τεμάχια στρογγυλοποιούνται πάντα προς τα πάνω.</div>
     <div id="areas-list" class="list-grid" aria-live="polite"></div>
   </section>
 
-  <section class="section" aria-labelledby="linear-title">
-    <h2 id="linear-title">Υλικά ανά τρεχόμετρο (lm)</h2>
-    <div class="muted">Το κόστος υπολογίζεται ως Τιμή × lm.</div>
-    <div id="linear-list" class="list-grid" aria-live="polite"></div>
+  <section class="section" aria-labelledby="volumes-title">
+    <h2 id="volumes-title">Υλικά ανά κυβικά μέτρα (m³)</h2>
+    <div class="muted">Το κόστος υπολογίζεται από την κατανάλωση ή ως Τιμή × m³. Τα τεμάχια (π.χ. σακιά) στρογγυλοποιούνται προς τα πάνω.</div>
+    <div id="volumes-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="workers-title">
@@ -86,18 +86,18 @@
     <h2 id="summary-title">Σύνοψη & Αναλύσεις (χωρίς ΦΠΑ)</h2>
     <div class="summary" id="summary">
       <div class="summary-row"><div>Υλικά επιφάνειας (m²)</div><div id="sumAreas" class="right">€0.00</div></div>
-      <div class="summary-row"><div>Υλικά γραμμικά (lm)</div><div id="sumLinear" class="right">€0.00</div></div>
+      <div class="summary-row"><div>Υλικά κυβικά (m³)</div><div id="sumVolumes" class="right">€0.00</div></div>
       <div class="summary-row"><div>Εργασία</div><div id="sumWorkers" class="right">€0.00</div></div>
       <div class="summary-row total"><div>Σύνολο Κόστους</div><div id="sumCost" class="right">€0.00</div></div>
       <div class="summary-row"><div>Markup</div><div id="sumMarkup" class="right">20%</div></div>
       <div class="summary-row total"><div>Τιμή Πώλησης</div><div id="sumSell" class="right">€0.00</div></div>
       <div class="summary-row"><div>Μικτό Κέρδος</div><div id="sumGross" class="right">€0.00 (0.0%)</div></div>
       <div class="summary-row"><div>Τιμή ανά m² (αν έχει οριστεί m²)</div><div id="sumPerM2" class="right">—</div></div>
-      <div class="summary-row"><div>Τιμή ανά lm (αν έχουν οριστεί lm)</div><div id="sumPerLm" class="right">—</div></div>
+      <div class="summary-row"><div>Τιμή ανά m³ (αν έχουν οριστεί m³)</div><div id="sumPerM3" class="right">—</div></div>
     </div>
     <p class="muted">Σημείωση: Οι τιμές δεν περιλαμβάνουν ΦΠΑ 24%.</p>
   </section>
 
-  <script src="/static/thermoprosopsi.js"></script>
+  <script src="/static/plakakia.js"></script>
   </div>
 {% endblock %}

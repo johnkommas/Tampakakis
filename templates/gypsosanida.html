@@ -4,7 +4,7 @@
   <div class="thermoprosopsi-page">
   <section class="hero">
     <div class="hero-grid">
-      <h1>Θερμοπρόσοψη</h1>
+      <h1>Γυψοσανίδα</h1>
       <div class="top-stats" aria-live="polite">
         <div class="stat">
           <div class="label">Σύνολο Κόστους</div>
@@ -27,8 +27,7 @@
 
   <section class="section" aria-labelledby="inputs-title">
     <h2 id="inputs-title">Εισαγωγή Ποσοτήτων</h2>
-    <p class="muted">Συμβουλή: Με κλικ στα πεδία επιλέγεται αυτόματα όλο το κείμενο. Εισαγάγετε εδώ m², lm και
-      μεροκάματα για Τεχνίτη/Βοηθό.</p>
+    <p class="muted">Ορίστε m², lm, μεροκάματα και τις τεμαχιακές ποσότητες (φύλλα, στρωτήρες, ορθοστάτες). Οι τεμαχιακές ποσότητες στρογγυλοποιούνται πάντα προς τα πάνω.</p>
     <div class="form-grid">
       <div class="field">
         <label for="m2">Επιφάνεια (m²)</label>
@@ -45,6 +44,38 @@
       <div class="field">
         <label for="days-voithos">Βοηθός Τεχνίτη — Μεροκάματα</label>
         <input id="days-voithos" name="days-voithos" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.1" value="0">
+      </div>
+    </div>
+
+    <div class="form-grid" style="margin-top: 8px;">
+      <div class="field">
+        <label for="sheetsGyps">Γυψοσανίδα — Φύλλα (τεμ.)</label>
+        <input id="sheetsGyps" name="sheetsGyps" class="input-lg input-grey" type="number" inputmode="numeric" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="sheetsIno">Ινοσανίδα — Φύλλα (τεμ.)</label>
+        <input id="sheetsIno" name="sheetsIno" class="input-lg input-grey" type="number" inputmode="numeric" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="sheetsAnth">Ανθυγρή — Φύλλα (τεμ.)</label>
+        <input id="sheetsAnth" name="sheetsAnth" class="input-lg input-grey" type="number" inputmode="numeric" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label>Μήκος για Στρωτήρες/Ορθοστάτες</label>
+        <div class="color-scheme-toggle" role="radiogroup" aria-label="Μήκος" id="lengthGroup">
+          <label><input type="radio" name="lengthOpt" value="500"><div class="text">500 cm</div></label>
+          <label><input type="radio" name="lengthOpt" value="750"><div class="text">750 cm</div></label>
+          <label><input type="radio" name="lengthOpt" value="1000"><div class="text">1000 cm</div></label>
+          <div class="slider-indicator" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="strotirasCount">Στρωτήρας (τεμ.)</label>
+        <input id="strotirasCount" name="strotirasCount" class="input-lg input-grey" type="number" inputmode="numeric" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="orthostatisCount">Ορθοστάτης (τεμ.)</label>
+        <input id="orthostatisCount" name="orthostatisCount" class="input-lg input-grey" type="number" inputmode="numeric" min="0" step="1" value="0">
       </div>
     </div>
   </section>
@@ -66,19 +97,25 @@
 
   <section class="section" aria-labelledby="areas-title">
     <h2 id="areas-title">Υλικά ανά m²</h2>
-    <div class="muted">Το κόστος υπολογίζεται ως Τιμή × m².</div>
+    <div class="muted">Κόστος = Τιμή × m²</div>
     <div id="areas-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="linear-title">
     <h2 id="linear-title">Υλικά ανά τρεχόμετρο (lm)</h2>
-    <div class="muted">Το κόστος υπολογίζεται ως Τιμή × lm.</div>
+    <div class="muted">Για «Περιμετρικά» και «Κανάλι» εφαρμόζεται 1 τεμ./3 lm με στρογγυλοποίηση προς τα πάνω.</div>
     <div id="linear-list" class="list-grid" aria-live="polite"></div>
+  </section>
+
+  <section class="section" aria-labelledby="pieces-title">
+    <h2 id="pieces-title">Υλικά τεμαχίων</h2>
+    <div class="muted">Οι ποσότητες προέρχονται από τα πεδία «Φύλλα», «Στρωτήρας (τεμ.)», «Ορθοστάτης (τεμ.)». Οι τιμές ενημερώνονται ανά είδος/μήκος.</div>
+    <div id="pieces-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="workers-title">
     <h2 id="workers-title">Εργασία</h2>
-    <div class="muted">Κόστος = Τιμή × Μεροκάματα (ορίζονται στην ενότητα "Εισαγωγή Ποσοτήτων").</div>
+    <div class="muted">Κόστος = Τιμή × Μεροκάματα.</div>
     <div id="workers-list" class="list-grid" aria-live="polite"></div>
   </section>
 
@@ -87,6 +124,7 @@
     <div class="summary" id="summary">
       <div class="summary-row"><div>Υλικά επιφάνειας (m²)</div><div id="sumAreas" class="right">€0.00</div></div>
       <div class="summary-row"><div>Υλικά γραμμικά (lm)</div><div id="sumLinear" class="right">€0.00</div></div>
+      <div class="summary-row"><div>Υλικά τεμαχίων</div><div id="sumPieces" class="right">€0.00</div></div>
       <div class="summary-row"><div>Εργασία</div><div id="sumWorkers" class="right">€0.00</div></div>
       <div class="summary-row total"><div>Σύνολο Κόστους</div><div id="sumCost" class="right">€0.00</div></div>
       <div class="summary-row"><div>Markup</div><div id="sumMarkup" class="right">20%</div></div>
@@ -98,6 +136,6 @@
     <p class="muted">Σημείωση: Οι τιμές δεν περιλαμβάνουν ΦΠΑ 24%.</p>
   </section>
 
-  <script src="/static/thermoprosopsi.js"></script>
+  <script src="/static/gypsosanida.js"></script>
   </div>
 {% endblock %}
