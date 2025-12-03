@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="hero">
+    <h1>Κέντρο Υπολογισμού Υλικών & Κόστους</h1>
+    <p>Εισάγετε ποσότητες, δείτε άμεσα κόστος, ΦΠΑ, κέρδος και τελική τιμή πώλησης.</p>
+  </section>
+
+  <section class="tiles" aria-label="Κατηγορίες Έργων">
+    <a class="tile" href="#thermoprosopsi" aria-label="Θερμοπρόσοψη">
+      <div class="tile-media">
+        <img src="/images/Thermononoseis.jpg" alt="Θερμοπρόσοψη">
+      </div>
+      <div class="tile-body">
+        <h2 class="tile-title">Θερμοπρόσοψη</h2>
+        <p class="tile-text">Μόνωση, ενεργειακή αναβάθμιση και ακριβής κοστολόγηση υλικών.</p>
+      </div>
+    </a>
+
+    <a class="tile" href="#plakakia" aria-label="Πλακάκια">
+      <div class="tile-media">
+        <img src="/images/Plakakia.jpg" alt="Πλακάκια">
+      </div>
+      <div class="tile-body">
+        <h2 class="tile-title">Πλακάκια</h2>
+        <p class="tile-text">Επιλογή υλικών, κόστη ανά m² και δυναμική τιμολόγηση.</p>
+      </div>
+    </a>
+
+    <a class="tile" href="#gypsosanida" aria-label="Γυψοσανίδα">
+      <div class="tile-media">
+        <img src="/images/Gipsosanides.jpg" alt="Γυψοσανίδα">
+      </div>
+      <div class="tile-body">
+        <h2 class="tile-title">Γυψοσανίδα</h2>
+        <p class="tile-text">Χωρίσματα, οροφές και προϋπολογισμοί με ακρίβεια.</p>
+      </div>
+    </a>
+  </section>
+{% endblock %}
