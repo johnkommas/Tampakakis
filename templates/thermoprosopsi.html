@@ -3,7 +3,7 @@
 {% block content %}
   <section class="hero">
     <div class="hero-grid">
-      <h1>Θερμοπρόσοψη — Υπολογισμός Κόστους</h1>
+      <h1>Θερμοπρόσοψη</h1>
       <div class="top-stats" aria-live="polite">
         <div class="stat">
           <div class="label">Σύνολο Κόστους</div>
@@ -12,6 +12,13 @@
         <div class="stat">
           <div class="label">Τιμή Πώλησης</div>
           <div class="value" id="liveSell">€0.00</div>
+        </div>
+        <div class="stat">
+          <div class="label">Μικτό Κέρδος</div>
+          <div class="value">
+            <span id="liveGrossAmt">€0.00</span>
+            <span id="liveGrossPct" class="value-pct">(0.0%)</span>
+          </div>
         </div>
       </div>
     </div>
@@ -24,19 +31,19 @@
     <div class="form-grid">
       <div class="field">
         <label for="m2">Επιφάνεια (m²)</label>
-        <input id="m2" name="m2" type="number" inputmode="decimal" min="0" step="0.01" value="0">
+        <input id="m2" name="m2" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.01" value="0">
       </div>
       <div class="field">
         <label for="lm">Τρεχόμετρα (lm)</label>
-        <input id="lm" name="lm" type="number" inputmode="decimal" min="0" step="0.01" value="0">
+        <input id="lm" name="lm" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.01" value="0">
       </div>
       <div class="field">
         <label for="days-technitis">Τεχνίτης — Μεροκάματα</label>
-        <input id="days-technitis" name="days-technitis" type="number" inputmode="decimal" min="0" step="0.1" value="0">
+        <input id="days-technitis" name="days-technitis" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.1" value="0">
       </div>
       <div class="field">
         <label for="days-voithos">Βοηθός Τεχνίτη — Μεροκάματα</label>
-        <input id="days-voithos" name="days-voithos" type="number" inputmode="decimal" min="0" step="0.1" value="0">
+        <input id="days-voithos" name="days-voithos" class="input-lg input-grey" type="number" inputmode="decimal" min="0" step="0.1" value="0">
       </div>
     </div>
   </section>
@@ -47,65 +54,31 @@
       <label for="markup">Επιθυμητό Markup</label>
       <div class="slider-row">
         <div class="slider-track">
-          <input id="markup" type="range" min="0" max="100" step="1" value="20">
+          <div class="slider-bubble" id="markupBubble">20%</div>
+          <input id="markup" type="range" min="0" max="100" step="1" value="20" aria-describedby="markup-legend markup-zone-label">
         </div>
-        <input id="markupPercent" class="percent-input" type="number" inputmode="numeric" min="0" max="100" step="1" value="20" aria-label="Ποσοστό Markup (%)">
       </div>
-      <div class="muted">Χρωματική μπάρα: Κόκκινο 0–14%, Γκρι 15–30%, Κίτρινο 31–60%, Πράσινο 61–100%.</div>
+      <div id="markup-zone-label" class="muted slider-zone-label">Ζώνη: Ισορροπημένο περιθώριο</div>
+      <div id="markup-legend" class="muted">Χρωματική μπάρα: Κόκκινο 0–14%, Γκρι 15–30%, Κίτρινο 31–60%, Πράσινο 61–100%.</div>
     </div>
   </section>
 
   <section class="section" aria-labelledby="areas-title">
     <h2 id="areas-title">Υλικά ανά m²</h2>
     <div class="muted">Το κόστος υπολογίζεται ως Τιμή × m².</div>
-    <div class="table-wrap">
-      <table class="table" id="tbl-areas">
-        <thead>
-          <tr>
-            <th>Υλικό</th>
-            <th>Τιμή/μον.</th>
-            <th class="right">Ποσότητα</th>
-            <th class="right">Κόστος</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <div id="areas-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="linear-title">
     <h2 id="linear-title">Υλικά ανά τρεχόμετρο (lm)</h2>
     <div class="muted">Το κόστος υπολογίζεται ως Τιμή × lm.</div>
-    <div class="table-wrap">
-      <table class="table" id="tbl-linear">
-        <thead>
-          <tr>
-            <th>Υλικό</th>
-            <th>Τιμή/μον.</th>
-            <th class="right">Ποσότητα</th>
-            <th class="right">Κόστος</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <div id="linear-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="workers-title">
     <h2 id="workers-title">Εργασία</h2>
     <div class="muted">Κόστος = Τιμή × Μεροκάματα (ορίζονται στην ενότητα "Εισαγωγή Ποσοτήτων").</div>
-    <div class="table-wrap">
-      <table class="table" id="tbl-workers">
-        <thead>
-          <tr>
-            <th>Ρόλος</th>
-            <th>Τιμή/ημέρα</th>
-            <th class="right">Κόστος</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <div id="workers-list" class="list-grid" aria-live="polite"></div>
   </section>
 
   <section class="section" aria-labelledby="summary-title">
