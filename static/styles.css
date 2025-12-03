@@ -304,6 +304,12 @@ button {
 [data-theme="dark"] .footer-logo--light { display: none; }
 [data-theme="dark"] .footer-logo--dark { display: block; }
 
+/* Footer compatibility image (center) */
+.compat-img { height: 28px; width: auto; display: block; }
+.compat-img--dark { display: none; }
+[data-theme="dark"] .compat-img--light { display: none; }
+[data-theme="dark"] .compat-img--dark { display: block; }
+
 /* Lighter, elegant copyright line */
 .site-footer .copyright {
   font-weight: 200; /* "Extra Thin" where available; falls back gracefully */
