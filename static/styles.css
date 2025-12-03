@@ -35,14 +35,14 @@ input,
 select,
 textarea,
 button {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .container {
-  width: 100%;
+  width: 90%;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 17px;
 }
 
 /* Wider container for large screens on selected pages (keeps header/footer safe at default width) */
@@ -76,12 +76,10 @@ button {
   gap: 12px;
 }
 
-.site-header .brand .brand-logo {
-  height: 50px !important;
-}
 
 
-.brand-logo { height: 18px; width: auto; display: block; }
+
+.brand-logo { height: 50px; width: auto; display: block; }
 /* Theme-specific header logos */
 .brand-logo--dark { display: none; }
 [data-theme="dark"] .brand-logo--light { display: none; }
