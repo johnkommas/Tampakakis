@@ -367,7 +367,10 @@
     animateCurrency($('#sumCost'), sumCost);
     $('#sumMarkup').textContent = `${markup}%`;
     animateCurrency($('#sumSell'), sell);
-    $('#sumGross').textContent = `${fmtEUR(gross)} (${marginPct.toFixed(1)}%)`;
+    const sumGrossAmtEl = $('#sumGrossAmt');
+    const sumGrossPctEl = $('#sumGrossPct');
+    if (sumGrossAmtEl) animateCurrency(sumGrossAmtEl, gross);
+    if (sumGrossPctEl) sumGrossPctEl.textContent = `(${marginPct.toFixed(1)}%)`;
     $('#sumPerM2').textContent = m2 > 0 ? fmtEUR(sell / Math.max(m2, 1e-9)) : '—';
     $('#sumPerM3').textContent = m3 > 0 ? fmtEUR(sell / Math.max(m3, 1e-9)) : '—';
 
@@ -377,7 +380,7 @@
     if (liveSell) animateCurrency(liveSell, sell, { duration: 700 });
     const liveGrossAmt = $('#liveGrossAmt');
     const liveGrossPct = $('#liveGrossPct');
-    if (liveGrossAmt) liveGrossAmt.textContent = fmtEUR(gross);
+    if (liveGrossAmt) animateCurrency(liveGrossAmt, gross, { duration: 700 });
     if (liveGrossPct) liveGrossPct.textContent = `(${marginPct.toFixed(1)}%)`;
   }
 

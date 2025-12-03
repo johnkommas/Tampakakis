@@ -5,7 +5,7 @@ services:
     image: tampakakis:latest
     container_name: tampakakis
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
