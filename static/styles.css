@@ -3,10 +3,10 @@
   color-scheme: light dark;
   --bg: #ffffff;
   --text: #0f172a;
-  --muted: #475569;
+  --muted: #000000;
   --card: #f1f5f9;
   --border: #e2e8f0;
-  --brand: #0ea5e9;
+  --brand: #e6bb0d;
 }
 
 [data-theme="dark"] {
@@ -15,7 +15,7 @@
   --muted: #94a3b8;
   --card: #393942;
   --border: #1f2937;
-  --brand: #38bdf8;
+  --brand: #e6bb0d;
 }
 
 html, body {
@@ -132,7 +132,7 @@ button {
   transition: transform 220ms ease;
   z-index: 1;
 }
-
+E6BB0DFF
 /* Move indicator based on the checked radio */
 .color-scheme-toggle:has(input[value="light"]:checked) .slider-indicator { transform: translateX(0%); }
 .color-scheme-toggle:has(input[value="dark"]:checked) .slider-indicator { transform: translateX(100%); }
@@ -222,7 +222,7 @@ button {
   padding: 20px 0 40px;
 }
 
-/* Image-first tiles with overlayed text */
+
 
 /* Subtle emphasis for count-up numbers */
 .count-anim {
@@ -456,7 +456,7 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   margin-top: -11px; /* center over 12px track with 34px thumb */
   width: 34px; height: 34px; border-radius: 18px;
-  background: rgb(4, 82, 122); border: 2px solid var(--brand);
+  background: rgb(230, 187, 13); border: 2px solid var(--brand);
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
