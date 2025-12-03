@@ -131,6 +131,11 @@ button {
 .color-scheme-toggle:has(input[value="dark"]:checked) .slider-indicator { transform: translateX(100%); }
 .color-scheme-toggle:has(input[value="auto"]:checked) .slider-indicator { transform: translateX(200%); }
 
+/* Also support generic 3-option segmented controls used elsewhere (e.g., Μήκος 500|750|1000) */
+.color-scheme-toggle:has(input[name="lengthOpt"][value="500"]:checked) .slider-indicator { transform: translateX(0%); }
+.color-scheme-toggle:has(input[name="lengthOpt"][value="750"]:checked) .slider-indicator { transform: translateX(100%); }
+.color-scheme-toggle:has(input[name="lengthOpt"][value="1000"]:checked) .slider-indicator { transform: translateX(200%); }
+
 @media (prefers-reduced-motion: reduce) {
   .color-scheme-toggle .slider-indicator { transition: none; }
 }
@@ -146,6 +151,37 @@ button {
 .hero { padding: 24px 0; }
 .hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
 .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+/* Left stack for back link + title */
+.hero-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+/* Elegant back link to home */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card), transparent 8%);
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.back-link::before {
+  content: "←";
+  font-weight: 600;
+  color: color-mix(in oklab, var(--text), transparent 30%);
+}
+.back-link:hover {
+  background: color-mix(in oklab, var(--card), var(--brand) 6%);
+  border-color: color-mix(in oklab, var(--border), var(--brand) 30%);
+  color: var(--text);
+}
+.back-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand), transparent 70%);
+}
 .top-stats { display: grid; grid-auto-flow: column; gap: 12px; align-items: center; }
 .top-stats .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-width: 180px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
 .top-stats .label { font-size: .76rem; color: var(--muted); margin-bottom: 4px; }
@@ -253,7 +289,7 @@ button {
 }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .footer-left, .footer-center, .footer-right { display: flex; align-items: center; gap: 8px; }
-.footer-logo { height: 24px; width: auto; display: block; }
+.footer-logo { height: 50px; width: auto; display: block; }
 /* Theme-specific footer logos */
 .footer-logo--dark { display: none; }
 [data-theme="dark"] .footer-logo--light { display: none; }

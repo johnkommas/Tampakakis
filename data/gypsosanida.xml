@@ -26,15 +26,13 @@
     </item>
     <item key="perimetrika">
       <name>Περιμετρικά</name>
-      <unit>unit</unit>
-      <consumption>1 units per 3 lm</consumption>
-      <latest_price>6.00</latest_price>
+      <unit>lm</unit>
+      <latest_price>2.00</latest_price>
     </item>
     <item key="kanali">
       <name>Κανάλι</name>
-      <unit>unit</unit>
-      <consumption>1 units per 3 lm</consumption>
-      <latest_price>8.00</latest_price>
+      <unit>lm</unit>
+      <latest_price>2.67</latest_price>
     </item>
   </linear>
 
