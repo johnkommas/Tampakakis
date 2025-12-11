@@ -99,4 +99,4 @@
       <latest_price>60.00</latest_price>
     </item>
   </workers>
-</catalog>
+<extras><item key="extra_kados"><name>Κάδος</name><unit>unit</unit><latest_price>120.00</latest_price></item><item key="extra_fatoura"><name>Φατούρα</name><unit>m2</unit><latest_price>0.00</latest_price></item></extras></catalog>

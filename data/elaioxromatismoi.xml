@@ -12,4 +12,31 @@
       <latest_price>60.00</latest_price>
     </item>
   </workers>
+<extras>
+  <item key="extra_kouvas">
+    <name>Κουβάς</name>
+    <unit>unit</unit>
+    <latest_price>55.00</latest_price>
+  </item>
+  <item key="extra_astari">
+  <name>Αστάρι</name>
+  <unit>unit</unit>
+  <latest_price>50.00</latest_price>
+</item>
+  <item key="extra_stokos">
+  <name>Στόκος</name>
+  <unit>unit</unit>
+  <latest_price>15.00</latest_price>
+</item>
+  <item key="extra_kados">
+  <name>Κάδος</name>
+  <unit>unit</unit>
+  <latest_price>120.00</latest_price>
+</item>
+  <item key="extra_fatoura">
+    <name>Φατούρα</name>
+    <unit>m2</unit>
+    <latest_price>0.00</latest_price>
+  </item>
+</extras>
 </catalog>

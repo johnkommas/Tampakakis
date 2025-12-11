@@ -3,7 +3,7 @@
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
   const state = {
-    catalog: { workers: [] },
+    catalog: { workers: [], extras: [] },
     m2: 0,
     markup: 20,
     workerDays: { technitis: 0, voithos: 0 },
@@ -97,8 +97,8 @@
     return unit === 'm2' || unit === 'day';
   }
 
-  function createExtra(desc = '', unit = 'unit', qty = 0, price = 0, autoQty = false) {
-    return { id: Math.random().toString(36).slice(2), desc, unit, qty: Number(qty)||0, price: Number(price)||0, autoQty: !!autoQty };
+  function createExtra(desc = '', unit = 'unit', qty = 0, price = 0, autoQty = false, key = null) {
+    return { id: Math.random().toString(36).slice(2), desc, unit, qty: Number(qty)||0, price: Number(price)||0, autoQty: !!autoQty, key: key || null };
   }
 
   function unitAutoQtyValue(unit) {
@@ -117,6 +117,7 @@
       const card = document.createElement('div');
       card.className = 'item-card';
       card.dataset.id = ex.id;
+      if (ex.key) card.dataset.key = ex.key;
       const opts = UNIT_OPTIONS.map(o => `<option value="${o.value}" ${ex.unit===o.value?'selected':''}>${o.label}</option>`).join('');
       const canAuto = supportsAutoUnit(ex.unit);
       const effectiveAuto = canAuto && !!ex.autoQty;
@@ -130,10 +131,11 @@
           <div class="price-label">Τιμή/μον.</div>
           <div class="price-group">
             <div class="price-chip">
-              <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}">
+              <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}" ${ex.key ? `data-original="${Number(ex.price).toFixed(2)}"` : ''}>
               <span class="sep">|</span>
               <span class="unit">${unitNice(ex.unit)}</span>
             </div>
+            ${ex.key ? '<button class="btn-update" hidden>Ενημέρωση</button>' : ''}
           </div>
         </div>
         <div class="card-total right">
@@ -168,7 +170,15 @@
     const id = card.dataset.id;
     const ex = state.extras.find(x => x.id === id); if (!ex) return;
     if (e.target.classList.contains('extra-desc')) ex.desc = e.target.value;
-    else if (e.target.classList.contains('extra-price')) ex.price = parseNum(e.target.value);
+    else if (e.target.classList.contains('extra-price')) {
+      ex.price = parseNum(e.target.value);
+      if (ex.key) {
+        const btn = card.querySelector('.btn-update');
+        const orig = parseNum(e.target.dataset.original);
+        const now = parseNum(e.target.value);
+        if (btn) btn.hidden = !(Math.abs(now - orig) > 0.0001);
+      }
+    }
     else if (e.target.classList.contains('extra-qty')) ex.qty = parseNum(e.target.value);
     recalc();
   }
@@ -211,6 +221,28 @@
       state.extras = state.extras.filter(x => x.id !== id);
       renderExtras();
       recalc();
+    } else {
+      const btn = e.target.closest('.btn-update');
+      if (btn) {
+        const card = btn.closest('.item-card');
+        const key = card?.dataset.key;
+        if (!key) return;
+        const priceInput = card.querySelector('input.extra-price');
+        const newPrice = parseNum(priceInput.value);
+        btn.disabled = true;
+        (async () => {
+          try {
+            await savePrice(key, newPrice);
+            priceInput.dataset.original = String(newPrice.toFixed(2));
+            btn.hidden = true;
+          } catch (err) {
+            console.error(err);
+            alert('Σφάλμα ενημέρωσης τιμής.');
+          } finally {
+            btn.disabled = false;
+          }
+        })();
+      }
     }
   }
 
@@ -237,7 +269,7 @@
             <div class="price-chip">
               <input type="number" class="price price-input" min="0" step="0.01" value="${item.latest_price}" data-original="${item.latest_price}">
               <span class="sep">|</span>
-              <span class="unit">${unitNice(item.unit)}</span>
+              <span class="unit">€/${unitNice(item.unit)}</span>
             </div>
             <button class="btn-update" hidden>Ενημέρωση</button>
           </div>
@@ -302,8 +334,12 @@
     }
     const data = await res.json();
     const item = data.item;
-    const idx = state.catalog.workers.findIndex(x => x.key === item.key);
-    if (idx >= 0) state.catalog.workers[idx].latest_price = item.latest_price;
+    const idxW = state.catalog.workers.findIndex(x => x.key === item.key);
+    if (idxW >= 0) state.catalog.workers[idxW].latest_price = item.latest_price;
+    if (Array.isArray(state.catalog.extras)) {
+      const idxE = state.catalog.extras.findIndex(x => x.key === item.key);
+      if (idxE >= 0) state.catalog.extras[idxE].latest_price = item.latest_price;
+    }
     recalc();
   }
 
@@ -459,14 +495,27 @@
       await fetchCatalog();
       attachInputs();
       renderWorkers();
-      // Extras defaults in required order
-      state.extras = [
-        createExtra('Κουβάς', 'unit', 0, 55, false),
-        createExtra('Αστάρι', 'unit', 0, 50, false),
-        createExtra('Στόκος', 'unit', 0, 15, false),
-        createExtra('Κάδος', 'unit', 0, 120, false),
-        createExtra('Φατούρα', 'm2', 0, 0, true),
-      ];
+      // Extras defaults in required order (prefer from catalog)
+      if (Array.isArray(state.catalog.extras) && state.catalog.extras.length) {
+        const order = ['extra_kouvas','extra_astari','extra_stokos','extra_kados','extra_fatoura'];
+        const sorted = [...state.catalog.extras].sort((a,b)=>order.indexOf(a.key)-order.indexOf(b.key));
+        state.extras = sorted.map(it => createExtra(
+          it.name,
+          it.unit,
+          0,
+          it.latest_price,
+          it.unit === 'm2', // auto only for Φατούρα (m2)
+          it.key
+        ));
+      } else {
+        state.extras = [
+          createExtra('Κουβάς', 'unit', 0, 55, false, 'extra_kouvas'),
+          createExtra('Αστάρι', 'unit', 0, 50, false, 'extra_astari'),
+          createExtra('Στόκος', 'unit', 0, 15, false, 'extra_stokos'),
+          createExtra('Κάδος', 'unit', 0, 120, false, 'extra_kados'),
+          createExtra('Φατούρα', 'm2', 0, 0, true, 'extra_fatoura'),
+        ];
+      }
       const addBtn = document.getElementById('add-extra');
       if (addBtn) addBtn.addEventListener('click', () => addExtraRow());
       renderExtras();

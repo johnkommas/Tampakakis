@@ -133,7 +133,7 @@
     return unit === 'm2' || unit === 'lm' || unit === 'day';
   }
 
-  function createExtra(desc = '', unit = 'unit', qty = 0, price = 0, autoQty = true) {
+  function createExtra(desc = '', unit = 'unit', qty = 0, price = 0, autoQty = true, key = null) {
     return {
       id: Math.random().toString(36).slice(2),
       desc,
@@ -141,6 +141,7 @@
       qty: Number(qty) || 0,
       price: Number(price) || 0,
       autoQty: !!autoQty,
+      key: key || null,
     };
   }
 
@@ -167,6 +168,7 @@
       const card = document.createElement('div');
       card.className = 'item-card';
       card.dataset.id = ex.id;
+      if (ex.key) card.dataset.key = ex.key;
       const opts = UNIT_OPTIONS.map(o => `<option value="${o.value}" ${ex.unit===o.value?'selected':''}>${o.label}</option>`).join('');
       const canAuto = supportsAutoUnit(ex.unit);
       // Enforce auto capability
@@ -181,10 +183,11 @@
           <div class="price-label">Τιμή/μον.</div>
           <div class="price-group">
             <div class="price-chip">
-              <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}">
+              <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}" ${ex.key ? `data-original="${Number(ex.price).toFixed(2)}"` : ''}>
               <span class="sep">|</span>
-              <span class="unit">${unitNice(ex.unit)}</span>
+              <span class="unit">€/${unitNice(ex.unit)}</span>
             </div>
+            ${ex.key ? '<button class="btn-update" hidden>Ενημέρωση</button>' : ''}
           </div>
         </div>
         <div class="card-total right">
@@ -224,6 +227,13 @@
       ex.desc = e.target.value;
     } else if (e.target.classList.contains('extra-price')) {
       ex.price = parseNum(e.target.value);
+      // Toggle update button if this extra is backed by catalog (has key)
+      if (ex.key) {
+        const btn = card.querySelector('.btn-update');
+        const orig = parseNum(e.target.dataset.original);
+        const now = parseNum(e.target.value);
+        if (btn) btn.hidden = !(Math.abs(now - orig) > 1e-9);
+      }
     } else if (e.target.classList.contains('extra-qty')) {
       ex.qty = parseNum(e.target.value);
     }
@@ -257,7 +267,7 @@
       }
       // update unit label next to price
       const unitSpan = card.querySelector('.price-chip .unit');
-      if (unitSpan) unitSpan.textContent = unitNice(ex.unit);
+      if (unitSpan) unitSpan.textContent = '€/' + unitNice(ex.unit);
     } else if (e.target.classList.contains('extra-auto')) {
       const canAuto = supportsAutoUnit(ex.unit);
       const checked = canAuto && e.target.checked;
@@ -281,6 +291,28 @@
       state.extras = state.extras.filter(x => x.id !== id);
       renderExtras();
       recalc();
+    } else {
+      const btn = e.target.closest('.btn-update');
+      if (btn) {
+        const card = btn.closest('.item-card');
+        const key = card?.dataset.key;
+        if (!key) return;
+        const priceInput = card.querySelector('input.extra-price');
+        const newPrice = parseNum(priceInput.value);
+        btn.disabled = true;
+        (async () => {
+          try {
+            await savePrice(key, newPrice);
+            priceInput.dataset.original = String(newPrice.toFixed(2));
+            btn.hidden = true;
+          } catch (err) {
+            console.error(err);
+            alert('Σφάλμα ενημέρωσης τιμής.');
+          } finally {
+            btn.disabled = false;
+          }
+        })();
+      }
     }
   }
 
@@ -306,7 +338,7 @@
           <div class="price-chip">
             <input type="number" class="price price-input" min="0" step="0.01" value="${item.latest_price}" data-original="${item.latest_price}">
             <span class="sep">|</span>
-            <span class="unit">${unitNice(item.unit)}</span>
+            <span class="unit">€/${unitNice(item.unit)}</span>
           </div>
           <button class="btn-update" hidden>Ενημέρωση</button>
         </div>
@@ -430,7 +462,7 @@
     const data = await res.json();
     // Update local catalog snapshot
     const item = data.item;
-    ['areas', 'linear', 'workers'].forEach(group => {
+    ['areas', 'linear', 'workers', 'extras'].forEach(group => {
       const idx = state.catalog[group].findIndex(x => x.key === item.key);
       if (idx >= 0) state.catalog[group][idx].latest_price = item.latest_price;
     });
@@ -651,11 +683,17 @@
       // Setup extras UI
       const addBtn = document.getElementById('add-extra');
       if (addBtn) addBtn.addEventListener('click', () => addExtraRow());
-      // Prefill rows
-      state.extras = [
-        createExtra('Κάδος', 'unit', 0, 120, true),
-        createExtra('Φατούρα', 'm2', 0, 0, true),
-      ];
+      // Initialize extras from catalog if available; else fallback
+      if (Array.isArray(state.catalog.extras) && state.catalog.extras.length) {
+        const order = ['extra_kados', 'extra_fatoura'];
+        const sorted = [...state.catalog.extras].sort((a,b)=>order.indexOf(a.key)-order.indexOf(b.key));
+        state.extras = sorted.map(it => createExtra(it.name, it.unit, 0, it.latest_price, true, it.key));
+      } else {
+        state.extras = [
+          createExtra('Κάδος', 'unit', 0, 120, true, 'extra_kados'),
+          createExtra('Φατούρα', 'm2', 0, 0, true, 'extra_fatoura'),
+        ];
+      }
       renderExtras();
       recalc();
     } catch (e) {
