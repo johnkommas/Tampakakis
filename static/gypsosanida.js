@@ -14,6 +14,7 @@
     lengthOpt: '500', // '500' | '750' | '1000'
     markup: 20,
     workerDays: {}, // key -> days
+    extras: [], // { id, desc, unit, qty, price, autoQty }
   };
 
   const currencyFormatter = new Intl.NumberFormat('el-GR', { style: 'currency', currency: 'EUR' });
@@ -107,6 +108,156 @@
     if (!res.ok) throw new Error('Αποτυχία φόρτωσης καταλόγου');
     state.catalog = await res.json();
   }
+
+  // ---------- Extras (Επιπρόσθετα) ----------
+  const UNIT_OPTIONS = [
+    { value: 'm2', label: 'Τετραγωνικά Μέτρα (m²)' },
+    { value: 'm3', label: 'Κυβικά Μέτρα (m³)' },
+    { value: 'lm', label: 'Τρεχόμετρο (lm)' },
+    { value: 'day', label: 'Ημέρα' },
+    { value: 'unit', label: 'Τεμάχια' },
+  ];
+
+  // Units that have an automatic source on this page (Γυψοσανίδα)
+  function supportsAutoUnit(unit) {
+    return unit === 'm2' || unit === 'lm' || unit === 'day';
+  }
+
+  function createExtra(desc = '', unit = 'unit', qty = 0, price = 0, autoQty = true) {
+    return {
+      id: Math.random().toString(36).slice(2),
+      desc,
+      unit,
+      qty: Number(qty) || 0,
+      price: Number(price) || 0,
+      autoQty: !!autoQty,
+    };
+  }
+
+  function unitAutoQtyValue(unit) {
+    switch (unit) {
+      case 'm2': return state.m2 || 0;
+      case 'lm': return state.lm || 0;
+      case 'day': {
+        let total = 0; for (const k in state.workerDays) total += Number(state.workerDays[k] || 0); return total;
+      }
+      default:
+        return 0; // m3, unit
+    }
+  }
+
+  function renderExtras() {
+    const wrap = document.getElementById('extras-list');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    state.extras.forEach(ex => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.dataset.id = ex.id;
+      const opts = UNIT_OPTIONS.map(o => `<option value="${o.value}" ${ex.unit===o.value?'selected':''}>${o.label}</option>`).join('');
+      const canAuto = supportsAutoUnit(ex.unit);
+      const effectiveAuto = canAuto && !!ex.autoQty;
+      const qtyVal = effectiveAuto ? unitAutoQtyValue(ex.unit) : ex.qty;
+      const cost = (Number(ex.price)||0) * (Number(qtyVal)||0);
+      card.innerHTML = `
+        <div class="info">
+          <div class="title"><input type="text" class="extra-desc" value="${ex.desc}" placeholder="Περιγραφή"></div>
+        </div>
+        <div class="price-stack">
+          <div class="price-label">Τιμή/μον.</div>
+          <div class="price-group">
+            <div class="price-chip">
+              <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}">
+              <span class="sep">|</span>
+              <span class="unit">${unitNice(ex.unit)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-total right">
+          <div class="qty">
+            <select class="extra-unit">${opts}</select>
+            <span class="sep">|</span>
+            <input type="number" class="extra-qty" min="0" step="0.01" value="${Number(qtyVal).toFixed(2)}" ${effectiveAuto ? 'disabled' : ''}>
+            <label style="display:inline-flex;align-items:center;gap:6px;margin-left:6px;font-size:12px;">
+              <input type="checkbox" class="extra-auto" ${effectiveAuto ? 'checked' : ''} ${canAuto ? '' : 'disabled'}> αυτόματα
+            </label>
+          </div>
+          <div class="cost">${fmtEUR(cost)}</div>
+          <button type="button" class="btn-remove" title="Διαγραφή">−</button>
+        </div>
+      `;
+      wrap.appendChild(card);
+    });
+
+    // Enable select-all on numeric inputs (price/qty)
+    wrap.querySelectorAll('input.extra-price, input.extra-qty').forEach(enableAutoSelect);
+    if (!wrap.dataset.bound) {
+      wrap.addEventListener('input', onExtrasInput);
+      wrap.addEventListener('change', onExtrasChange);
+      wrap.addEventListener('click', onExtrasClick);
+      wrap.dataset.bound = '1';
+    }
+  }
+
+  function onExtrasInput(e) {
+    const card = e.target.closest('.item-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    const ex = state.extras.find(x => x.id === id);
+    if (!ex) return;
+    if (e.target.classList.contains('extra-desc')) ex.desc = e.target.value;
+    else if (e.target.classList.contains('extra-price')) ex.price = parseNum(e.target.value);
+    else if (e.target.classList.contains('extra-qty')) ex.qty = parseNum(e.target.value);
+    recalc();
+  }
+
+  function onExtrasChange(e) {
+    const card = e.target.closest('.item-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    const ex = state.extras.find(x => x.id === id);
+    if (!ex) return;
+    if (e.target.classList.contains('extra-unit')) {
+      ex.unit = e.target.value;
+      const canAuto = supportsAutoUnit(ex.unit);
+      const autoCb = card.querySelector('.extra-auto');
+      const qtyInput = card.querySelector('.extra-qty');
+      if (autoCb) {
+        autoCb.disabled = !canAuto;
+        autoCb.checked = !!canAuto;
+        ex.autoQty = !!canAuto;
+      }
+      if (qtyInput) {
+        if (canAuto) { qtyInput.value = unitAutoQtyValue(ex.unit).toFixed(2); qtyInput.disabled = true; }
+        else { qtyInput.disabled = false; }
+      }
+      const unitSpan = card.querySelector('.price-chip .unit');
+      if (unitSpan) unitSpan.textContent = unitNice(ex.unit);
+    } else if (e.target.classList.contains('extra-auto')) {
+      const canAuto = supportsAutoUnit(ex.unit);
+      const checked = canAuto && e.target.checked;
+      e.target.checked = checked;
+      ex.autoQty = checked;
+      const q = card.querySelector('.extra-qty');
+      if (q) {
+        if (checked) { q.value = unitAutoQtyValue(ex.unit).toFixed(2); q.disabled = true; }
+        else { q.disabled = false; }
+      }
+    }
+    recalc();
+  }
+
+  function onExtrasClick(e) {
+    if (e.target.classList.contains('btn-remove')) {
+      const card = e.target.closest('.item-card');
+      const id = card?.dataset.id; if (!id) return;
+      state.extras = state.extras.filter(x => x.id !== id);
+      renderExtras();
+      recalc();
+    }
+  }
+
+  function addExtraRow(prefill) { state.extras.push(prefill || createExtra('', 'unit', 0, 0, true)); renderExtras(); recalc(); }
 
   function makePriceGroup(item) {
     return `
@@ -431,7 +582,28 @@
       sumWorkers += cost;
     });
 
-    const sumCost = sumAreas + sumLinear + sumPieces + sumWorkers;
+    // Extras
+    let sumExtras = 0;
+    $$('#extras-list .item-card').forEach(card => {
+      const price = parseNum(card.querySelector('input.extra-price').value);
+      const unitSel = card.querySelector('select.extra-unit');
+      const autoCb = card.querySelector('input.extra-auto');
+      const qtyInput = card.querySelector('input.extra-qty');
+      let qty = 0;
+      const unit = unitSel?.value;
+      if (autoCb && autoCb.checked && supportsAutoUnit(unit)) {
+        qty = unitAutoQtyValue(unit);
+        if (qtyInput) qtyInput.value = Number(qty).toFixed(2);
+      } else {
+        qty = parseNum(qtyInput?.value);
+      }
+      const costEl = card.querySelector('.cost');
+      const cost = price * qty;
+      if (costEl) costEl.textContent = fmtEUR(cost);
+      sumExtras += cost;
+    });
+
+    const sumCost = sumAreas + sumLinear + sumPieces + sumWorkers + sumExtras;
     const markup = state.markup;
     const sell = sumCost * (1 + markup / 100);
     const gross = sell - sumCost;
@@ -440,6 +612,7 @@
     $('#sumAreas').textContent = fmtEUR(sumAreas);
     $('#sumLinear').textContent = fmtEUR(sumLinear);
     $('#sumPieces').textContent = fmtEUR(sumPieces);
+    const sumExtrasEl = $('#sumExtras'); if (sumExtrasEl) sumExtrasEl.textContent = fmtEUR(sumExtras);
     $('#sumWorkers').textContent = fmtEUR(sumWorkers);
     animateCurrency($('#sumCost'), sumCost);
     $('#sumMarkup').textContent = `${markup}%`;
@@ -632,6 +805,14 @@
       attachCardHandlers();
       attachInputs();
       renderHeaderDefaults();
+      // Extras UI and defaults
+      const addBtn = document.getElementById('add-extra');
+      if (addBtn) addBtn.addEventListener('click', () => addExtraRow());
+      state.extras = [
+        createExtra('Κάδος', 'unit', 0, 120, true),
+        createExtra('Φατούρα', 'm2', 0, 0, true),
+      ];
+      renderExtras();
       recalc();
     } catch (e) {
       console.error(e);

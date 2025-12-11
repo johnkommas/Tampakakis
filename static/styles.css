@@ -9,6 +9,129 @@
   --brand: #e6bb0d;
 }
 
+/* ---- Extras list: make it single column full-width ---- */
+#extras-list.list-grid {
+  grid-template-columns: 1fr !important;
+}
+
+/* ---- Extras description input: borderless, full width ---- */
+.item-card .title input.extra-desc {
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* ---- Extras: unified Qty control styling (unit | qty | auto) ---- */
+.item-card .qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.item-card .qty .sep {
+  opacity: 0.55;
+}
+
+/* Remove colored backgrounds from the unit select inside Extras */
+.item-card .qty select.extra-unit {
+  background: transparent;
+  color: inherit;
+  border: none; /* borderless select for cleaner UI */
+  border-radius: 0;
+  padding: 6px 10px;
+  font: inherit;           /* match page typography */
+  line-height: inherit;    /* keep consistent vertical rhythm */
+}
+.item-card .qty select.extra-unit:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--brand), transparent 70%);
+  outline-offset: 2px;
+}
+
+/* Ensure Extras numeric inputs look good on dark/light */
+.item-card input.extra-price,
+.item-card input.extra-qty {
+  background: transparent;
+  color: inherit;
+  border: none; /* borderless inputs for cleaner UI */
+  outline: none;
+  box-shadow: none;
+  font: inherit;           /* ensure same font as the rest of the UI */
+  line-height: inherit;
+}
+
+/* Visible focus without adding a heavy box border */
+.item-card .price-chip input.extra-price:focus-visible,
+.item-card .qty input.extra-qty:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--brand), transparent 70%);
+  outline-offset: 2px;
+}
+
+/* Disabled qty when "αυτόματα" is ενεργό */
+.item-card .qty input.extra-qty:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Stronger override in case later generic rules add borders */
+.item-card .qty select.extra-unit,
+.item-card .price-chip input.extra-price,
+.item-card .qty input.extra-qty {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ---- Buttons: make Add (+) and Remove (−) more polished ---- */
+#add-extra {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--brand), #fff 20%), var(--brand));
+  color: #0b1220;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+#add-extra:hover { filter: saturate(1.05) brightness(1.02); }
+#add-extra:active { transform: translateY(1px); }
+#add-extra:focus-visible { outline: 2px solid color-mix(in oklab, var(--brand), #000 25%); outline-offset: 3px; }
+
+.btn-remove {
+  appearance: none;
+  border: 1px solid #ef4444;
+  background: color-mix(in oklab, #ef4444 15%, transparent);
+  color: #ef4444;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+.btn-remove:hover { background: color-mix(in oklab, #ef4444 25%, transparent); color: #dc2626; border-color: #dc2626; }
+.btn-remove:active { transform: translateY(1px); }
+.btn-remove:focus-visible { outline: 2px solid #ef4444; outline-offset: 2px; }
+
+[data-theme="dark"] #add-extra {
+  color: #0b1220;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.35);
+}
+[data-theme="dark"] .btn-remove {
+  border-color: #f87171;
+  color: #f87171;
+  background: color-mix(in oklab, #f87171 18%, transparent);
+}
+
 [data-theme="dark"] {
   --bg: #090909;
   --text: #e5e7eb;

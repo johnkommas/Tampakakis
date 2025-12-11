@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<catalog>
+  <workers>
+    <item key="technitis">
+      <name>Τεχνίτης</name>
+      <unit>day</unit>
+      <latest_price>80.00</latest_price>
+    </item>
+    <item key="voithos">
+      <name>Βοηθός Τεχνίτη</name>
+      <unit>day</unit>
+      <latest_price>60.00</latest_price>
+    </item>
+  </workers>
+</catalog>

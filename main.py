@@ -393,6 +393,105 @@ async def plakakia_update_price(payload: UpdatePricePayload):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# =======================
+# Elaioxromatismoi page (client-side only)
+# =======================
+
+ELAIO_DATA_FILE = Path("data/elaioxromatismoi.xml")
+
+
+def ensure_elaioxromatismoi_data_file():
+    if not ELAIO_DATA_FILE.exists():
+        ELAIO_DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+        ELAIO_DATA_FILE.write_text(
+            """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog><workers/></catalog>\n""",
+            encoding="utf-8",
+        )
+
+
+def load_elaioxromatismoi_catalog():
+    ensure_elaioxromatismoi_data_file()
+    tree = ET.parse(ELAIO_DATA_FILE)
+    root = tree.getroot()
+
+    items = []
+    workers_el = root.find("workers")
+    if workers_el is not None:
+        for it in workers_el.findall("item"):
+            key = it.get("key")
+            name = (it.findtext("name") or "").strip()
+            unit = (it.findtext("unit") or "").strip()
+            latest_price = float(it.findtext("latest_price") or 0)
+            items.append({
+                "key": key,
+                "name": name,
+                "unit": unit,
+                "latest_price": latest_price,
+            })
+    return {"workers": items}
+
+
+def update_elaioxromatismoi_price_in_xml(key: str, new_price: float):
+    ensure_elaioxromatismoi_data_file()
+    tree = ET.parse(ELAIO_DATA_FILE)
+    root = tree.getroot()
+
+    found_el = None
+    workers_el = root.find("workers")
+    if workers_el is not None:
+        for it in workers_el.findall("item"):
+            if it.get("key") == key:
+                found_el = it
+                break
+
+    if found_el is None:
+        raise KeyError(f"Item with key '{key}' not found")
+
+    lp = found_el.find("latest_price")
+    if lp is None:
+        lp = ET.SubElement(found_el, "latest_price")
+    lp.text = f"{new_price:.2f}"
+
+    tree.write(ELAIO_DATA_FILE, encoding="utf-8", xml_declaration=True)
+
+    name = (found_el.findtext("name") or "").strip()
+    unit = (found_el.findtext("unit") or "").strip()
+    return {
+        "key": key,
+        "name": name,
+        "unit": unit,
+        "latest_price": float(lp.text or 0),
+    }
+
+
+@app.get("/elaioxromatismoi", response_class=HTMLResponse)
+async def elaioxromatismoi_page(request: Request):
+    return templates.TemplateResponse(
+        "elaioxromatismoi.html",
+        {"request": request},
+    )
+
+
+@app.get("/api/elaioxromatismoi/catalog")
+async def elaioxromatismoi_catalog():
+    try:
+        data = load_elaioxromatismoi_catalog()
+        return JSONResponse(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/elaioxromatismoi/update-price")
+async def elaioxromatismoi_update_price(payload: UpdatePricePayload):
+    try:
+        updated = update_elaioxromatismoi_price_in_xml(payload.key, payload.latest_price)
+        return JSONResponse({"status": "ok", "item": updated})
+    except KeyError as ke:
+        raise HTTPException(status_code=404, detail=str(ke))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Convenience for local development (optional)
 if __name__ == "__main__":
     import uvicorn
