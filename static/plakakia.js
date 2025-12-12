@@ -186,6 +186,7 @@
               <input type="checkbox" class="extra-auto" ${effectiveAuto ? 'checked' : ''} ${canAuto ? '' : 'disabled'}> αυτόματα
             </label>
           </div>
+          <div class="qty-help" hidden>Απαιτείται ποσότητα</div>
           <div class="cost">${fmtEUR(cost)}</div>
           <button type="button" class="btn-remove" title="Διαγραφή">−</button>
         </div>
@@ -558,6 +559,16 @@
       const costEl = card.querySelector('.cost');
       const cost = price * qty;
       if (costEl) costEl.textContent = fmtEUR(cost);
+      const help = card.querySelector('.qty-help');
+      if (qtyInput && qty <= 0) {
+        qtyInput.classList.add('qty--invalid');
+        card.classList.add('has-zero-qty');
+        if (help) help.hidden = false;
+      } else {
+        if (qtyInput) qtyInput.classList.remove('qty--invalid');
+        card.classList.remove('has-zero-qty');
+        if (help) help.hidden = true;
+      }
       sumExtras += cost;
     });
 
