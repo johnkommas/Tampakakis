@@ -172,7 +172,7 @@
             <div class="price-chip">
               <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}" ${ex.key ? `data-original="${Number(ex.price).toFixed(2)}"` : ''}>
               <span class="sep">|</span>
-              <span class="unit">${unitNice(ex.unit)}</span>
+              <span class="unit">€/${unitNice(ex.unit)}</span>
             </div>
             ${ex.key ? '<button class="btn-update" hidden>Ενημέρωση</button>' : ''}
           </div>

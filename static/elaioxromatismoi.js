@@ -133,7 +133,7 @@
             <div class="price-chip">
               <input type="number" class="price extra-price" min="0" step="0.01" value="${ex.price}" ${ex.key ? `data-original="${Number(ex.price).toFixed(2)}"` : ''}>
               <span class="sep">|</span>
-              <span class="unit">${unitNice(ex.unit)}</span>
+              <span class="unit">€/${unitNice(ex.unit)}</span>
             </div>
             ${ex.key ? '<button class="btn-update" hidden>Ενημέρωση</button>' : ''}
           </div>
@@ -203,7 +203,7 @@
         else { qtyInput.disabled = false; }
       }
       const unitSpan = card.querySelector('.price-chip .unit');
-      if (unitSpan) unitSpan.textContent = unitNice(ex.unit);
+      if (unitSpan) unitSpan.textContent = '€/' + unitNice(ex.unit);
     } else if (e.target.classList.contains('extra-auto')) {
       const canAuto = supportsAutoUnit(ex.unit);
       const checked = canAuto && e.target.checked;
